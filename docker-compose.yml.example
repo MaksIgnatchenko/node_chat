@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: chat_mongo
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: chat
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./mongo-init.js:/docker/mongo-init.js:ro
+  node:
+    image: node:11
+    container_name: chat_node
+    ports:
+      - "80:8080"
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+volumes:
+  db_data:
