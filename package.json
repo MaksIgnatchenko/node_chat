@@ -1,0 +1,10 @@
+{
+  "name": "socket-chat",
+  "version": "0.0.1",
+  "description": "chat based on socket.io",
+  "dependencies": {
+    "mime": "^2.4.0",
+    "mongodb": "^3.2.2",
+    "socket.io": "^2.2.0"
+  }
+}
