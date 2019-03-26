@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: user
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - ./mongo-init.js:/docker/mongo-init.js:ro
+      - db_data:/data/db
   node:
     image: node:11
     container_name: chat_node
@@ -20,6 +20,10 @@ services:
       - "80:8080"
     volumes:
       - ./:/var/www
+    depends_on:
+      - mongo
+    links:
+      - mongo:mongo_host
     working_dir: /var/www
     command: /bin/bash
     stdin_open: true

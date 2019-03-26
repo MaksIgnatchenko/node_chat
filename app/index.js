@@ -4,27 +4,12 @@ var fs = require('fs'),
     crypto = require('crypto'),
     cookie = require('cookie'),
     url = require('url'),
-    querystring = require('querystring');
-    // dbConnection = require('./mongo.js');
+    querystring = require('querystring'),
+    User = require('./user.js').User;
 
 
 
 app.listen(8080);
-
-// var db = dbConnection.getDbConnection();
-//
-// function test() {
-//     setTimeout(() => console.log(db), 5000);
-// };
-//
-// test();
-
-console.log(require('./mongo.js').getDb);
-
-
-// console.log(require('./mongo.js').getDbConnection(function(data) {
-//     console.log(data);
-// }));
 
 function handler (req, res) {
     if (req.url == '/postLogin' && req.method == 'POST') {
@@ -46,12 +31,26 @@ function handler (req, res) {
             res.statusCode = 200;
             return res.end('name ' + post.username);
         });
-        // var query = url.parse(req.url, true, true).query;
-        // res.writeHead(302, {
-        //     'Location': '/index'
-        // });
-        // res.end();
-    } else {
+        res.writeHead(302, {
+            'Location': '/index'
+        });
+        res.end();
+    } else if (req.url == '/register' && req.method == 'POST') {
+        let body = '';
+        req.on('data', function(chunk) {
+            body += chunk.toString();
+        });
+        req.on('end', function() {
+            let post = querystring.parse(body);
+            let user = new User();
+            user.save(post.name.trim(), post.password.trim());
+        });
+        res.writeHead(302, {
+            'Location': '/index'
+        });
+        res.end();
+    }
+    else {
         loadFile(req.url, req, res);
     }
 }

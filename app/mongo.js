@@ -1,15 +1,23 @@
-const MongoClient = require('mongodb').MongoClient;
-const user = encodeURIComponent('user');
-const password = encodeURIComponent('password');
-const authMechanism = 'DEFAULT';
-const dbName = 'chat';
-const url = `mongodb://${user}:${password}@mongo_host:27017/?authMechanism=${authMechanism}`;
-const client = new MongoClient(url, { useNewUrlParser: true });
-    client.connect(function(err, client){
-        var db = client.db(dbName);
-    });
+'use strict';
 
-exports.getResult = function() {
-    
+class MongoConnection {
+    constructor() {
+        this.configs = require('../configs/mongoConfigs');
+        this.MongoClient = require('mongodb').MongoClient;
+        this.url = `mongodb://${this.configs.user}:${this.configs.password}@${this.configs.host}/?authMechanism=${this.configs.authMechanism}`;
+        this.client = new this.MongoClient(this.url, { useNewUrlParser: true });
+    }
+
+    getdbConnection() {
+        var self = this;
+        return new Promise((resolve, reject) => {
+            self.client.connect().then(con => {
+                resolve(con.db(self.configs.database));
+            }).catch(err => {
+                reject(err);
+            });
+        });
+    }
 }
 
+exports.MongoConnection = MongoConnection;
